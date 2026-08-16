@@ -1,3 +1,6 @@
+
+
+Bee experiment · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,7 +71,7 @@ p.dark{color:var(--text);}
 .hud-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--grey-mid);margin-bottom:0.18rem;}
 .hud-value{font-size:1.1rem;font-weight:700;color:var(--white);}
 .hud-value.cash{color:#6fcf97;}
-
+ 
 /* ── Form ── */
 label{display:block;font-size:0.95rem;font-weight:700;margin-bottom:0.35rem;color:var(--navy);}
 input[type=text],select{
@@ -173,15 +176,15 @@ input:focus,select:focus{border-color:var(--steel);}
 }
 .thinking-dots span:nth-child(2){animation-delay:0.2s;}
 .thinking-dots span:nth-child(3){animation-delay:0.4s;}
-
-
+ 
+ 
 /* ── Flash overlay ── */
 #flash-overlay{
   position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0;
 }
 /* ── Confetti ── */
 #confetti-canvas{position:fixed;inset:0;z-index:998;pointer-events:none;display:none;}
-
+ 
 /* ── End dim ── */
 .end-dim{filter:grayscale(0.55) brightness(0.9);}
 /* ── Cash tick ── */
@@ -190,11 +193,11 @@ input:focus,select:focus{border-color:var(--steel);}
 </style>
 </head>
 <body>
-
+ 
 <div id="flash-overlay"></div>
 <canvas id="confetti-canvas"></canvas>
-
-
+ 
+ 
 <!-- LANDING -->
 <div class="screen active" id="s-landing">
   <div class="card">
@@ -211,7 +214,7 @@ input:focus,select:focus{border-color:var(--steel);}
     <button class="btn btn-primary" onclick="goTo('s-screening')">Begin</button>
   </div>
 </div>
-
+ 
 <!-- SCREENING -->
 <div class="screen" id="s-screening">
   <div class="card">
@@ -245,7 +248,7 @@ input:focus,select:focus{border-color:var(--steel);}
     <p id="screen-err" style="color:var(--red);margin-top:0.5rem;display:none;margin-bottom:0">Please fill in all fields before continuing.</p>
   </div>
 </div>
-
+ 
 <!-- RULES -->
 <div class="screen" id="s-rules">
   <div class="card">
@@ -267,7 +270,7 @@ input:focus,select:focus{border-color:var(--steel);}
     <button class="btn btn-primary" onclick="startMock()">Continue to Practice Round</button>
   </div>
 </div>
-
+ 
 <!-- ROUND -->
 <div class="screen" id="s-round">
   <div class="card">
@@ -289,7 +292,7 @@ input:focus,select:focus{border-color:var(--steel);}
     </div>
   </div>
 </div>
-
+ 
 <!-- CALCULATOR -->
 <div class="screen" id="s-calc">
   <div class="card">
@@ -326,7 +329,7 @@ input:focus,select:focus{border-color:var(--steel);}
     <div class="mcq-options" id="calc-mcq"></div>
   </div>
 </div>
-
+ 
 <!-- RESULT -->
 <div class="screen" id="s-result">
   <div class="card" id="result-card">
@@ -370,7 +373,7 @@ input:focus,select:focus{border-color:var(--steel);}
     <button class="btn btn-primary" onclick="nextAfterResult()" style="margin-top:0.5rem">Continue</button>
   </div>
 </div>
-
+ 
 <!-- SWITCH -->
 <div class="screen" id="s-switch">
   <div class="card">
@@ -392,7 +395,7 @@ input:focus,select:focus{border-color:var(--steel);}
     </div>
   </div>
 </div>
-
+ 
 <!-- END -->
 <div class="screen" id="s-end">
   <div class="card" id="end-card">
@@ -410,7 +413,7 @@ input:focus,select:focus{border-color:var(--steel);}
     <p style="font-size:0.82rem;margin-top:0.9rem;margin-bottom:0">Thank you for participating. Results will be announced within 48 hours.</p>
   </div>
 </div>
-
+ 
 <script>
 // ═══ STATE ═══
 const G={
@@ -421,7 +424,7 @@ const G={
   curProblem:null,curIsMock:false,selectedOption:null,roundStart:null,
 };
 let _prevCash=100;
-
+ 
 // ═══ PROBLEMS ═══
 const MOCK={
   title:"Practice: Simple Interest",
@@ -444,7 +447,7 @@ const PROBLEMS=[
 ];
 const CAT_SEQ=['Medium','High','Medium','Low'];
 const PCT_SEQ=[65,89,75,55];
-
+ 
 function disclosure(round,isMock){
   if(G.arm===0) return '<div class="ai-disclosure">AI can provide incorrect and inaccurate responses.</div>';
   if(G.arm===1){
@@ -457,21 +460,21 @@ function disclosure(round,isMock){
   return `<div class="ai-disclosure">Confidence: <span style="color:${c};font-weight:700">${pct}%</span></div>`;
 }
 function aiOk(round){return round!==2;}
-
+ 
 // ═══ NAVIGATION ═══
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 }
-
+ 
 // ═══ LIKERT ═══
 function lk(group,val){
   document.getElementById(group+'-likert').querySelectorAll('.likert-btn')
     .forEach((b,i)=>b.classList.toggle('selected',i+1===val));
   G[group]=val;
 }
-
+ 
 // ═══ CASH ANIMATION ═══
 function animCash(elId,from,to){
   const el=document.getElementById(elId);
@@ -492,7 +495,7 @@ function updateAllCash(){
   ['hud-cash','result-cash','switch-cash'].forEach(id=>animCash(id,_prevCash,G.cash));
   _prevCash=G.cash;
 }
-
+ 
 // ═══ HUD ═══
 function updateHud(){
   document.getElementById('hud').style.display='flex';
@@ -502,7 +505,7 @@ function updateHud(){
   document.getElementById('hud-answered').textContent=answered+' of 4';
   updateAllCash();
 }
-
+ 
 // ═══ FLASH ═══
 function flash(color){
   const el=document.getElementById('flash-overlay');
@@ -511,9 +514,9 @@ function flash(color){
   setTimeout(()=>{el.style.transition='opacity 0.4s';el.style.opacity='0';},100);
   setTimeout(()=>{el.style.transition='';},550);
 }
-
-
-
+ 
+ 
+ 
 // ═══ CONFETTI ═══
 function confetti(){
   const cv=document.getElementById('confetti-canvas');
@@ -540,9 +543,9 @@ function confetti(){
   }
   requestAnimationFrame(draw);
 }
-
-
-
+ 
+ 
+ 
 // ═══ SCREENING ═══
 function submitScreening(){
   G.name=document.getElementById('q-name').value.trim();
@@ -567,7 +570,7 @@ function submitScreening(){
   }
   goTo('s-rules');
 }
-
+ 
 // ═══ MOCK ═══
 function startMock(){
   G.startTime=Date.now();
@@ -577,14 +580,14 @@ function startGame(){
   G.round=0;
   renderRound(PROBLEMS[0],false);
 }
-
+ 
 // ═══ TYPING ═══
 function typeText(el, text, onDone) {
   el.textContent = '';
   let i = 0;
   // 30 wpm = ~5 chars/sec = 200ms per char, but we use word-level pacing
   // Average word = 5 chars, so 200ms/char gives natural feel
-  const msPerChar = 100;
+  const msPerChar = 80;
   function next() {
     if (i < text.length) {
       el.textContent += text[i++];
@@ -595,33 +598,33 @@ function typeText(el, text, onDone) {
   }
   next();
 }
-
+ 
 // ═══ RENDER ROUND ═══
 function renderRound(p,isMock){
   G.selectedOption=null;G.curProblem=p;G.curIsMock=isMock;
   document.getElementById('mock-banner').style.display=isMock?'block':'none';
   document.getElementById('hud').style.display=isMock?'none':'flex';
   if(!isMock)updateHud();
-
+ 
   const r=isMock?0:G.round;
   document.getElementById('round-badge').textContent=isMock?'Practice Round':('Round '+(r+1)+' of 4');
   document.getElementById('prob-title').textContent=p.title;
   document.getElementById('prob-text').innerHTML=p.text;
-
+ 
   const ok=isMock?true:aiOk(r);
   const ans=isMock?p.aiCorrect:(ok?p.aiCorrect:p.aiWrong);
   const useAI2=!isMock&&G.switched&&r===3;
   const lbl=useAI2?'AI Model 2':(G.tier===1?'AI (Paid Plan)':'AI (Free Plan)');
   const cls=useAI2?'ai-box ai2':'ai-box';
   const lcls=useAI2?'ai-label ai2':'ai-label';
-
+ 
   // Thinking dots first
   document.getElementById('ai-area').innerHTML=`
     <div class="${cls}">
       <div class="${lcls}">${lbl} is thinking...</div>
       <div class="thinking-dots"><span></span><span></span><span></span></div>
     </div>`;
-
+ 
   // Disable MCQ and verify until AI finishes
   document.getElementById('verify-btn').disabled=true;
   document.getElementById('submit-area').style.display='none';
@@ -637,7 +640,7 @@ function renderRound(p,isMock){
     };
     mcq.appendChild(btn);
   });
-
+ 
   G.roundStart=Date.now()+1500;
   setTimeout(()=>{
     const fullText = `According to my calculations, the correct answer is ${ans}`;
@@ -652,10 +655,10 @@ function renderRound(p,isMock){
       mcq.querySelectorAll('.mcq-btn').forEach(b=>b.disabled=false);
     });
   },1500);
-
+ 
   goTo('s-round');
 }
-
+ 
 // ═══ DIRECT CHOICE ═══
 function submitDirect(){
   const p=G.curProblem,isMock=G.curIsMock,r=isMock?0:G.round;
@@ -669,7 +672,7 @@ function submitDirect(){
   record(isMock,r,action,sel,correct,delta,0);
   showResult(isMock,correct,delta,action,r);
 }
-
+ 
 // ═══ VERIFY ═══
 function chooseVerify(){
   const p=G.curProblem,isMock=G.curIsMock;
@@ -701,12 +704,12 @@ function submitVerify(sel){
   record(isMock,r,'verify',sel,correct,delta-5,5);
   showResult(isMock,correct,delta,'verify',r);
 }
-
+ 
 // ═══ RECORD ═══
 function record(isMock,r,action,sel,correct,delta,vcost){
   G.choices.push({mock:isMock,round:isMock?0:r+1,action,selectedOption:sel,correct,delta,verifyCost:vcost,timeSec:((Date.now()-G.roundStart)/1000).toFixed(1)});
 }
-
+ 
 // ═══ SHOW RESULT ═══
 function showResult(isMock,correct,delta,action,r){
   if(!isMock){
@@ -731,7 +734,7 @@ function showResult(isMock,correct,delta,action,r){
   G.curIsMock=isMock;G.curRound=r;
   goTo('s-result');
 }
-
+ 
 // ═══ NEXT ═══
 function nextAfterResult(){
   const isMock=G.curIsMock,r=G.curRound;
@@ -753,7 +756,7 @@ function nextAfterResult(){
   G.round++;
   renderRound(PROBLEMS[G.round],false);
 }
-
+ 
 // ═══ SWITCH ═══
 function doSwitch(yes){
   G.switched=yes;G.switchTime=new Date().toISOString();
@@ -761,7 +764,7 @@ function doSwitch(yes){
   G.round++;
   renderRound(PROBLEMS[G.round],false);
 }
-
+ 
 // ═══ END ═══
 function endGame(){
   G.endTime=Date.now();
@@ -791,9 +794,9 @@ function endGame(){
   logToSheets();
   goTo('s-end');
 }
-
+ 
 // ═══ LOGGING ═══
-const SHEETS_URL='https://script.google.com/macros/s/AKfycbyDGyOYhwoP-WfirjOLWV9Pt4ZNlg-n844N05e04AiIJl0Y1CzHj-M_3N0OOgMfnjvtmw/exec';
+const SHEETS_URL='https://script.google.com/macros/s/AKfycbyGLJ-stX-ci5cUky_IP3UV1T2rZw9IhZsz8M2msQqNwklbE_dbspx1ozLkB1L9R0DrrQ/exec';
 function logToSheets(){
   const g=G.choices.filter(c=>!c.mock);
   const mk=G.choices.find(c=>c.mock)||{};
@@ -815,9 +818,26 @@ function logToSheets(){
     r3_action:g[2]?.action||'',r3_answer:g[2]?.selectedOption||'',r3_correct:g[2]?.correct||false,r3_delta:g[2]?.delta||0,r3_time:g[2]?.timeSec||0,
     r4_action:g[3]?.action||'',r4_answer:g[3]?.selectedOption||'',r4_correct:g[3]?.correct||false,r4_delta:g[3]?.delta||0,r4_time:g[3]?.timeSec||0,
   };
-  if(SHEETS_URL==='https://script.google.com/macros/s/AKfycbyDGyOYhwoP-WfirjOLWV9Pt4ZNlg-n844N05e04AiIJl0Y1CzHj-M_3N0OOgMfnjvtmw/exec'){console.log('Payload:',payload);return;}
-  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(e=>console.warn(e));
+  // Use GET with params to avoid CORS issues with Apps Script
+  const params = new URLSearchParams(payload).toString();
+  const url = SHEETS_URL + '?' + params;
+  fetch(url, {method:'GET', mode:'no-cors'}).catch(e=>console.warn('Log failed:',e));
 }
 </script>
 </body>
 </html>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
