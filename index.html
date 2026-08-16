@@ -815,7 +815,7 @@ function logToSheets(){
     r3_action:g[2]?.action||'',r3_answer:g[2]?.selectedOption||'',r3_correct:g[2]?.correct||false,r3_delta:g[2]?.delta||0,r3_time:g[2]?.timeSec||0,
     r4_action:g[3]?.action||'',r4_answer:g[3]?.selectedOption||'',r4_correct:g[3]?.correct||false,r4_delta:g[3]?.delta||0,r4_time:g[3]?.timeSec||0,
   };
-  if(SHEETS_URL==='YOUR_APPS_SCRIPT_URL_HERE'){console.log('Payload:',payload);return;}
+  if(SHEETS_URL==='https://script.google.com/macros/s/AKfycbyDGyOYhwoP-WfirjOLWV9Pt4ZNlg-n844N05e04AiIJl0Y1CzHj-M_3N0OOgMfnjvtmw/exec'){console.log('Payload:',payload);return;}
   fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(e=>console.warn(e));
 }
 </script>
