@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IIMA PGP Assessment</title>
+<style>
+:root {
+  --navy:#051c2c; --navy2:#0a2a3f; --steel:#1f4e79;
+  --accent:#2e6ca4; --grey:#d0d5da; --grey-mid:#8a949e;
+  --grey-light:#eef1f4; --paper:#f7f8fa; --white:#ffffff;
+  --green:#1a7a4c; --green-light:#e3f2ea;
+  --red:#a3282d; --red-light:#f7e5e6;
+  --amber:#9a6a00; --text:#051c2c; --text-mid:#4a5560;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Times New Roman',Times,serif;
+  background:var(--navy); color:var(--text);
+  min-height:100vh; display:flex; align-items:center;
+  justify-content:center; padding:1rem; line-height:1;
+}
+/* ── Screens ── */
+.screen{display:none;max-width:700px;width:100%;}
+.screen.active{display:block;}
+/* ── Cards ── */
+.card{
+  background:var(--white); border-radius:4px;
+  padding:2rem; margin-bottom:1rem;
+  box-shadow:0 8px 40px rgba(0,0,0,0.35);
+}
+.card-inner{
+  background:var(--paper); border-left:3px solid var(--steel);
+  border-radius:2px; padding:1rem 1.25rem; margin:0.9rem 0;
+}
+/* ── Type ── */
+h1{font-size:1.75rem;font-weight:700;line-height:1.2;margin-bottom:0.75rem;color:var(--navy);}
+h2{font-size:1.35rem;font-weight:700;margin-bottom:0.6rem;color:var(--navy);line-height:1.2;}
+h3{font-size:1rem;font-weight:700;margin-bottom:0.45rem;color:var(--navy);}
+p{color:var(--text-mid);line-height:1.4;margin-bottom:0.7rem;font-size:1rem;}
+p.dark{color:var(--text);}
+.eyebrow{
+  display:inline-block;font-size:0.7rem;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;color:var(--steel);
+  border-bottom:2px solid var(--steel);padding-bottom:0.2rem;margin-bottom:1rem;
+}
+/* ── Badges ── */
+.badge{
+  display:inline-block;padding:0.25rem 0.75rem;border-radius:2px;
+  font-size:0.72rem;font-weight:700;letter-spacing:0.04em;
+  text-transform:uppercase;margin-bottom:0.9rem;
+}
+.badge-navy{background:var(--navy);color:var(--white);}
+.badge-green{background:var(--green-light);color:var(--green);border:1px solid var(--green);}
+.badge-red{background:var(--red-light);color:var(--red);border:1px solid var(--red);}
+.badge-amber{background:#fdf3dd;color:var(--amber);border:1px solid var(--amber);}
+/* ── HUD ── */
+.hud{
+  display:flex;align-items:stretch;
+  background:var(--navy);border-radius:3px;
+  margin-bottom:1.1rem;overflow:hidden;
+}
+.hud-cell{
+  padding:0.65rem 0.8rem;flex:1;
+  text-align:center;border-right:1px solid #103a54;
+}
+.hud-cell:last-child{border-right:none;}
+.hud-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--grey-mid);margin-bottom:0.18rem;}
+.hud-value{font-size:1.1rem;font-weight:700;color:var(--white);}
+.hud-value.cash{color:#6fcf97;}
+
+/* ── Form ── */
+label{display:block;font-size:0.95rem;font-weight:700;margin-bottom:0.35rem;color:var(--navy);}
+input[type=text],select{
+  width:100%;background:var(--white);border:1px solid var(--grey);
+  border-radius:2px;color:var(--text);padding:0.6rem 0.8rem;
+  font-size:1rem;font-family:'Times New Roman',Times,serif;margin-bottom:1rem;outline:none;
+}
+input:focus,select:focus{border-color:var(--steel);}
+.slider-wrap{margin-bottom:1.1rem;}
+.slider-wrap input[type=range]{width:100%;accent-color:var(--steel);margin:0.35rem 0 0.25rem;}
+.slider-labels{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--grey-mid);}
+.slider-val{text-align:center;font-size:1.05rem;font-weight:700;color:var(--steel);margin-bottom:0.15rem;}
+/* ── Buttons ── */
+.btn{
+  display:block;width:100%;padding:0.78rem 1.5rem;border-radius:2px;
+  border:none;font-size:1rem;font-weight:700;
+  font-family:'Times New Roman',Times,serif;cursor:pointer;text-align:center;
+}
+.btn-primary{background:var(--navy);color:var(--white);}
+.btn-primary:hover{background:var(--navy2);}
+.btn-steel{background:var(--steel);color:var(--white);}
+.btn-outline{background:var(--white);color:var(--navy);border:1.5px solid var(--navy);}
+.btn-outline:hover{background:var(--paper);}
+.btn-red{background:var(--white);color:var(--red);border:1.5px solid var(--red);}
+.btn-red:hover{background:var(--red-light);}
+.btn-row{display:flex;gap:0.7rem;margin-top:0.9rem;}
+.btn-row .btn{flex:1;}
+/* ── AI box ── */
+.ai-box{
+  border:1.5px solid var(--steel);border-radius:3px;
+  padding:0.9rem 1.1rem;margin:1rem 0;background:var(--paper);
+}
+.ai-box.ai2{border-color:#6a3d9a;background:#f4eefa;}
+.ai-label{font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--steel);margin-bottom:0.35rem;}
+.ai-label.ai2{color:#6a3d9a;}
+.ai-answer{font-size:1.25rem;font-weight:700;color:var(--navy);min-height:1.6rem;}
+.ai-disclosure{font-size:0.83rem;color:var(--text-mid);margin-top:0.55rem;padding-top:0.5rem;border-top:1px solid var(--grey);line-height:1.3;}
+.conf-badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:2px;font-size:0.78rem;font-weight:700;}
+/* ── MCQ ── */
+.mcq-options{display:flex;flex-direction:column;gap:0.5rem;margin:0.9rem 0;}
+.mcq-btn{
+  background:var(--white);border:1.5px solid var(--grey);border-radius:2px;
+  padding:0.72rem 1rem;color:var(--navy);font-size:1rem;font-weight:700;
+  font-family:'Times New Roman',Times,serif;cursor:pointer;text-align:left;
+}
+.mcq-btn:hover:not(:disabled){border-color:var(--steel);background:var(--grey-light);}
+.mcq-btn.selected{border-color:var(--steel);background:#e4edf5;}
+.mcq-btn.correct{border-color:var(--green);background:var(--green-light);}
+.mcq-btn.wrong{border-color:var(--red);background:var(--red-light);}
+.mcq-btn:disabled{opacity:0.45;cursor:not-allowed;}
+/* ── Likert ── */
+.likert{display:flex;gap:0.35rem;margin:0.5rem 0 0.9rem;}
+.likert-btn{
+  flex:1;padding:0.48rem 0.2rem;border:1.5px solid var(--grey);
+  border-radius:2px;background:var(--white);color:var(--grey-mid);
+  font-size:0.9rem;font-weight:700;cursor:pointer;text-align:center;
+  font-family:'Times New Roman',Times,serif;line-height:1.2;
+}
+.likert-btn:hover{border-color:var(--steel);color:var(--navy);}
+.likert-btn.selected{border-color:var(--steel);background:var(--navy);color:var(--white);}
+/* ── Calculator ── */
+.calc-display{
+  background:var(--navy);border-radius:2px;padding:0.7rem 1rem;
+  font-family:'Courier New',monospace;font-size:1.25rem;color:#6fcf97;
+  text-align:right;margin-bottom:0.7rem;min-height:2.4rem;word-break:break-all;
+}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.38rem;}
+.calc-key{
+  padding:0.68rem;border-radius:2px;border:1px solid var(--grey);
+  background:var(--white);color:var(--navy);font-size:0.93rem;font-weight:700;
+  cursor:pointer;text-align:center;font-family:'Times New Roman',Times,serif;
+}
+.calc-key:hover{background:var(--grey-light);}
+.calc-key.op{color:var(--steel);}
+.calc-key.action{background:var(--steel);color:var(--white);}
+.calc-key.clear{color:var(--red);}
+.calc-key.span2{grid-column:span 2;}
+/* ── Results ── */
+.result-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0.48rem 0;border-bottom:1px solid var(--grey);font-size:0.95rem;
+}
+.result-row:last-child{border-bottom:none;}
+.result-val{font-weight:700;}
+.pos{color:var(--green);} .neg{color:var(--red);}
+.divider{border:none;border-top:1px solid var(--grey);margin:1.1rem 0;}
+/* ── Plan banners ── */
+.plan-banner{
+  display:flex;align-items:center;gap:0.6rem;padding:0.7rem 1rem;
+  border-radius:2px;margin-bottom:0.9rem;font-size:0.93rem;font-weight:700;
+}
+.plan-free{background:var(--grey-light);color:var(--navy);border:1px solid var(--grey);}
+.plan-paid{background:#fdf3dd;color:var(--amber);border:1px solid var(--amber);}
+/* ── Animations ── */
+@keyframes fade-in{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.fade-in{animation:fade-in 0.3s ease forwards;}
+@keyframes dot-bounce{0%,80%,100%{transform:scale(0.7);opacity:0.5;}40%{transform:scale(1.1);opacity:1;}}
+.thinking-dots{display:inline-flex;gap:5px;align-items:center;padding:0.4rem 0;}
+.thinking-dots span{
+  width:8px;height:8px;border-radius:50%;background:var(--steel);display:inline-block;
+  animation:dot-bounce 1.2s infinite ease-in-out;
+}
+.thinking-dots span:nth-child(2){animation-delay:0.2s;}
+.thinking-dots span:nth-child(3){animation-delay:0.4s;}
+
+
+/* ── Flash overlay ── */
+#flash-overlay{
+  position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0;
+}
+/* ── Confetti ── */
+#confetti-canvas{position:fixed;inset:0;z-index:998;pointer-events:none;display:none;}
+
+/* ── End dim ── */
+.end-dim{filter:grayscale(0.55) brightness(0.9);}
+/* ── Cash tick ── */
+.cash-up{color:#6fcf97 !important;}
+.cash-down{color:#f87171 !important;}
+</style>
+</head>
+<body>
+
+<div id="flash-overlay"></div>
+<canvas id="confetti-canvas"></canvas>
+
+
+<!-- LANDING -->
+<div class="screen active" id="s-landing">
+  <div class="card">
+    <div class="eyebrow">IIMA &middot; BEE Research Study</div>
+    <h1>PGP Quantitative Assessment</h1>
+    <div class="card-inner">
+      <h3>What's at stake</h3>
+      <p class="dark">You're a PGP-1 student at IIMA. You need to answer all 4 questions in this multi-round assessment to pass the course. If you fail to do so, you are awarded an I grade in the course (and aren't eligible for the real monetary payout in case you are in the top 3 respondents).</p>
+    </div>
+    <div class="card-inner">
+      <h3>Prize pool</h3>
+      <p class="dark">Top 3 scorers are paid their exact in-game earnings &times; 5. For example, if the top scorer had an ending cash position of 150 then he would receive 150 &times; 5 = ₹750.</p>
+    </div>
+    <button class="btn btn-primary" onclick="goTo('s-screening')">Begin</button>
+  </div>
+</div>
+
+<!-- SCREENING -->
+<div class="screen" id="s-screening">
+  <div class="card">
+    <div class="eyebrow">About You</div>
+    <h2>A few quick questions</h2>
+    <label>Full Name</label>
+    <input type="text" id="q-name" placeholder="Enter your full name">
+    <div class="slider-wrap">
+      <label>Years of mathematics-intensive education since Grade 10</label>
+      <div class="slider-val" id="math-val">3 years</div>
+      <input type="range" id="q-math" min="0" max="6" value="3" step="1"
+        oninput="document.getElementById('math-val').textContent=this.value+' year'+(this.value==1?'':'s')">
+      <div class="slider-labels"><span>0 yrs</span><span>6 yrs</span></div>
+    </div>
+    <div class="slider-wrap">
+      <label>Comfort with multi-step quantitative problems without help</label>
+      <div class="slider-val" id="comfort-val">0</div>
+      <input type="range" id="q-comfort" min="-3" max="3" value="0" step="1"
+        oninput="document.getElementById('comfort-val').textContent=(this.value>0?'+':'')+this.value">
+      <div class="slider-labels"><span>&minus;3 (not at all)</span><span>+3 (very comfortable)</span></div>
+    </div>
+    <label>Attention check: please select "Tea Post"</label>
+    <select id="q-attn">
+      <option value="">Select...</option>
+      <option value="teapost">Tea Post</option>
+      <option value="kamlas">Kamlas</option>
+      <option value="radhikas">Radhikas</option>
+      <option value="kitkat">Kitkat</option>
+    </select>
+    <button class="btn btn-primary" onclick="submitScreening()">Next</button>
+    <p id="screen-err" style="color:var(--red);margin-top:0.5rem;display:none;margin-bottom:0">Please fill in all fields before continuing.</p>
+  </div>
+</div>
+
+<!-- RULES -->
+<div class="screen" id="s-rules">
+  <div class="card">
+    <div class="eyebrow">Rules</div>
+    <h2>How the game works</h2>
+    <div id="plan-banner" class="plan-banner"></div>
+    <div id="tier-detail" class="card-inner"></div>
+    <div class="card-inner">
+      <h3>Scoring</h3>
+      <div class="result-row"><span>Correct answer</span><span class="result-val pos">+₹20</span></div>
+      <div class="result-row"><span>Wrong answer</span><span class="result-val" style="color:var(--grey-mid)">₹0 earned</span></div>
+      <div class="result-row"><span>Verify yourself</span><span class="result-val neg">&minus;₹5 (always deducted)</span></div>
+      <div class="result-row"><span>Switch AI mid-game</span><span class="result-val neg">&minus;₹10</span></div>
+    </div>
+    <div class="card-inner">
+      <h3>Consequence</h3>
+      <p class="dark" style="margin-bottom:0">Failing to answer all 4 questions correctly results in an I grade and makes you ineligible for the cash payout even if you are in the top 3 respondents.</p>
+    </div>
+    <button class="btn btn-primary" onclick="startMock()">Continue to Practice Round</button>
+  </div>
+</div>
+
+<!-- ROUND -->
+<div class="screen" id="s-round">
+  <div class="card">
+    <div class="hud" id="hud" style="display:none">
+      <div class="hud-cell"><div class="hud-label">Round</div><div class="hud-value" id="hud-round">1 of 4</div></div>
+      <div class="hud-cell"><div class="hud-label">Answered</div><div class="hud-value" id="hud-answered">0 of 4</div></div>
+      <div class="hud-cell"><div class="hud-label">Cash</div><div class="hud-value cash" id="hud-cash">₹100</div></div>
+    </div>
+    <div id="mock-banner" style="display:none" class="badge badge-amber">Practice Round &mdash; no effect on cash position</div>
+    <div class="badge badge-navy" id="round-badge">Round 1 of 4</div>
+    <h2 id="prob-title">Problem</h2>
+    <div class="card-inner"><p class="dark" id="prob-text" style="margin-bottom:0"></p></div>
+    <div id="ai-area"></div>
+    <p style="font-size:0.95rem;font-weight:700;color:var(--navy);margin-bottom:0.5rem">Choose your answer, or verify yourself first:</p>
+    <div class="mcq-options" id="round-mcq"></div>
+    <button class="btn btn-outline" id="verify-btn" onclick="chooseVerify()" style="margin-top:0.5rem">Verify myself (&minus;₹5)</button>
+    <div id="submit-area" style="display:none;margin-top:0.7rem">
+      <button class="btn btn-steel" onclick="submitDirect()">Submit answer</button>
+    </div>
+  </div>
+</div>
+
+<!-- CALCULATOR -->
+<div class="screen" id="s-calc">
+  <div class="card">
+    <div class="badge badge-amber">Verification Mode &middot; AI answer hidden</div>
+    <h2 id="calc-title">Problem</h2>
+    <div class="card-inner"><p class="dark" id="calc-text" style="margin-bottom:0"></p></div>
+    <div class="calc-display" id="calc-display">0</div>
+    <div class="calc-grid">
+      <div class="calc-key clear" onclick="cClear()">C</div>
+      <div class="calc-key op" onclick="cIn('(')">(</div>
+      <div class="calc-key op" onclick="cIn(')')">)</div>
+      <div class="calc-key op" onclick="cIn('/')">&divide;</div>
+      <div class="calc-key" onclick="cIn('7')">7</div>
+      <div class="calc-key" onclick="cIn('8')">8</div>
+      <div class="calc-key" onclick="cIn('9')">9</div>
+      <div class="calc-key op" onclick="cIn('*')">&times;</div>
+      <div class="calc-key" onclick="cIn('4')">4</div>
+      <div class="calc-key" onclick="cIn('5')">5</div>
+      <div class="calc-key" onclick="cIn('6')">6</div>
+      <div class="calc-key op" onclick="cIn('-')">&minus;</div>
+      <div class="calc-key" onclick="cIn('1')">1</div>
+      <div class="calc-key" onclick="cIn('2')">2</div>
+      <div class="calc-key" onclick="cIn('3')">3</div>
+      <div class="calc-key op" onclick="cIn('+')">+</div>
+      <div class="calc-key" onclick="cIn('0')">0</div>
+      <div class="calc-key" onclick="cIn('.')">.</div>
+      <div class="calc-key op" onclick="cPow()">x&#8319;</div>
+      <div class="calc-key op" onclick="cLn()">ln</div>
+      <div class="calc-key action span2" onclick="cEq()">=</div>
+      <div class="calc-key op" onclick="cLog()">log</div>
+      <div class="calc-key op" onclick="cSqrt()">&radic;</div>
+    </div>
+    <p style="font-size:0.95rem;font-weight:700;color:var(--navy);margin-top:1.1rem;margin-bottom:0.5rem">Select your answer:</p>
+    <div class="mcq-options" id="calc-mcq"></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="s-result">
+  <div class="card" id="result-card">
+    <div class="hud" style="display:none" id="result-hud">
+      <div class="hud-cell"><div class="hud-label">Cash</div><div class="hud-value cash" id="result-cash">₹100</div></div>
+    </div>
+    <div id="res-badge"></div>
+    <h2 id="res-title"></h2>
+    <p id="res-msg"></p>
+    <div class="card-inner" id="res-detail"></div>
+    <div id="prebelief-block" style="display:none">
+      <hr class="divider">
+      <h3>Before the graded rounds begin</h3>
+      <p>How likely do you think this AI is to make a mistake on a problem like this?</p>
+      <div class="likert" id="prebelief-likert">
+        <div class="likert-btn" onclick="lk('prebelief',1)">1<br><span style="font-size:0.65rem;color:inherit">Very<br>unlikely</span></div>
+        <div class="likert-btn" onclick="lk('prebelief',2)">2</div>
+        <div class="likert-btn" onclick="lk('prebelief',3)">3</div>
+        <div class="likert-btn" onclick="lk('prebelief',4)">4<br><span style="font-size:0.65rem;color:inherit">Neutral</span></div>
+        <div class="likert-btn" onclick="lk('prebelief',5)">5</div>
+        <div class="likert-btn" onclick="lk('prebelief',6)">6</div>
+        <div class="likert-btn" onclick="lk('prebelief',7)">7<br><span style="font-size:0.65rem;color:inherit">Very<br>likely</span></div>
+      </div>
+      <p id="prebelief-err" style="color:var(--red);display:none;margin-bottom:0.5rem">Please rate before continuing.</p>
+    </div>
+    <div id="confidence-block" style="display:none">
+      <hr class="divider">
+      <h3>One last question</h3>
+      <p>Across the assessment, how confident did the AI seem in its answers?</p>
+      <div class="likert" id="confidence-likert">
+        <div class="likert-btn" onclick="lk('confidence',1)">1<br><span style="font-size:0.65rem;color:inherit">Not<br>confident</span></div>
+        <div class="likert-btn" onclick="lk('confidence',2)">2</div>
+        <div class="likert-btn" onclick="lk('confidence',3)">3</div>
+        <div class="likert-btn" onclick="lk('confidence',4)">4<br><span style="font-size:0.65rem;color:inherit">Neutral</span></div>
+        <div class="likert-btn" onclick="lk('confidence',5)">5</div>
+        <div class="likert-btn" onclick="lk('confidence',6)">6</div>
+        <div class="likert-btn" onclick="lk('confidence',7)">7<br><span style="font-size:0.65rem;color:inherit">Very<br>confident</span></div>
+      </div>
+      <p id="confidence-err" style="color:var(--red);display:none;margin-bottom:0.5rem">Please rate before continuing.</p>
+    </div>
+    <button class="btn btn-primary" onclick="nextAfterResult()" style="margin-top:0.5rem">Continue</button>
+  </div>
+</div>
+
+<!-- SWITCH -->
+<div class="screen" id="s-switch">
+  <div class="card">
+    <div class="hud">
+      <div class="hud-cell"><div class="hud-label">Cash</div><div class="hud-value cash" id="switch-cash">₹100</div></div>
+    </div>
+    <div class="badge badge-red">Your AI gave an incorrect suggestion</div>
+    <h2>Switch AI model?</h2>
+    <p>A comparable AI model used by the student community is available. It may perform differently, better or worse. You won't know until you use it.</p>
+    <div class="card-inner">
+      <div class="result-row"><span>Cost to switch</span><span class="result-val neg">&minus;₹10</span></div>
+      <div class="result-row"><span>If you switch</span><span class="result-val" style="color:var(--grey-mid)">You use AI Model 2 for Round 4</span></div>
+      <div class="result-row"><span>If you don't switch</span><span class="result-val" style="color:var(--grey-mid)" id="stay-label">You stay on your current plan</span></div>
+    </div>
+    <p>Do you want to switch for ₹10?</p>
+    <div class="btn-row">
+      <button class="btn btn-red" onclick="doSwitch(true)">Switch, pay ₹10</button>
+      <button class="btn btn-outline" onclick="doSwitch(false)">Stay on current plan</button>
+    </div>
+  </div>
+</div>
+
+<!-- END -->
+<div class="screen" id="s-end">
+  <div class="card" id="end-card">
+    <div id="end-badge"></div>
+    <h1 id="end-title"></h1>
+    <p id="end-msg"></p>
+    <div class="card-inner" id="end-summary"></div>
+    <div class="card-inner">
+      <h3>Your final earnings</h3>
+      <div class="result-row"><span>In-game cash position</span><span class="result-val" id="end-cash"></span></div>
+      <div class="result-row"><span>Multiplier</span><span class="result-val">&times; 5</span></div>
+      <div class="result-row"><span><strong>Prize pool amount</strong></span><span class="result-val pos" id="end-prize"></span></div>
+    </div>
+    <div class="card-inner" id="end-eligible"></div>
+    <p style="font-size:0.82rem;margin-top:0.9rem;margin-bottom:0">Thank you for participating. Results will be announced within 48 hours.</p>
+  </div>
+</div>
+
+<script>
+// ═══ STATE ═══
+const G={
+  name:'',mathYears:3,comfort:0,attnAnswer:'',attnPass:false,
+  arm:0,tier:0,cash:100,round:0,
+  prebelief:0,confidence:0,switched:false,switchTime:null,
+  choices:[],startTime:null,endTime:null,
+  curProblem:null,curIsMock:false,selectedOption:null,roundStart:null,
+};
+let _prevCash=100;
+
+// ═══ PROBLEMS ═══
+const MOCK={
+  title:"Practice: Simple Interest",
+  text:"You invest ₹1,000 at 10% simple interest per year. What is the total value after 3 years? (Practice only.)",
+  correct:"1300",aiCorrect:"1300",options:["1100","1300","1331","1250"],
+};
+const PROBLEMS=[
+  {title:"Compound Growth",
+   text:"A mutual fund grows at 8% per year. What multiple of the initial investment is reached after 9 years? (To 2 decimal places.)",
+   correct:"2.00",aiCorrect:"2.00",aiWrong:"1.72",options:["1.48","1.72","2.00","2.16"]},
+  {title:"Logarithmic Growth",
+   text:"A startup grows at 12% per year. How many years will it take to triple in value? (To 2 decimal places.)",
+   correct:"9.69",aiCorrect:"9.69",aiWrong:"10.24",options:["8.77","9.69","10.24","11.51"]},
+  {title:"Fractional Change",
+   text:"The cost of raw materials falls by 3/8 of its value, then rises by 1/5 of the new (reduced) value. What is the net change from the original? (As a % to 2 decimal places, e.g. -25.00.)",
+   correct:"-25.00",aiCorrect:"-25.00",aiWrong:"-17.50",options:["-17.50","-25.00","-32.50","-20.00"]},
+  {title:"Exponential Depreciation",
+   text:"Equipment depreciates at 15% per year. What percentage of its original value remains after 5 years? (To 2 decimal places.)",
+   correct:"44.37",aiCorrect:"44.37",aiWrong:"25.00",options:["25.00","44.37","57.22","51.00"]},
+];
+const CAT_SEQ=['Medium','High','Medium','Low'];
+const PCT_SEQ=[65,89,75,55];
+
+function disclosure(round,isMock){
+  if(G.arm===0) return '<div class="ai-disclosure">AI can provide incorrect and inaccurate responses.</div>';
+  if(G.arm===1){
+    const lvl=isMock?'High':CAT_SEQ[round];
+    const c=lvl==='High'?'var(--green)':lvl==='Low'?'var(--red)':'var(--amber)';
+    return `<div class="ai-disclosure">Confidence: <span class="conf-badge" style="background:${c}22;color:${c};border:1px solid ${c}">${lvl}</span></div>`;
+  }
+  const pct=isMock?80:PCT_SEQ[round];
+  const c=pct>=80?'var(--green)':pct>=65?'var(--amber)':'var(--red)';
+  return `<div class="ai-disclosure">Confidence: <span style="color:${c};font-weight:700">${pct}%</span></div>`;
+}
+function aiOk(round){return round!==2;}
+
+// ═══ NAVIGATION ═══
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ═══ LIKERT ═══
+function lk(group,val){
+  document.getElementById(group+'-likert').querySelectorAll('.likert-btn')
+    .forEach((b,i)=>b.classList.toggle('selected',i+1===val));
+  G[group]=val;
+}
+
+// ═══ CASH ANIMATION ═══
+function animCash(elId,from,to){
+  const el=document.getElementById(elId);
+  if(!el)return;
+  const dur=550,start=performance.now();
+  const dir=to>from?'cash-up':'cash-down';
+  el.classList.add(dir);
+  function step(now){
+    const p=Math.min((now-start)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    el.textContent='₹'+Math.round(from+(to-from)*e);
+    if(p<1)requestAnimationFrame(step);
+    else{el.textContent='₹'+to;setTimeout(()=>el.classList.remove(dir),250);}
+  }
+  requestAnimationFrame(step);
+}
+function updateAllCash(){
+  ['hud-cash','result-cash','switch-cash'].forEach(id=>animCash(id,_prevCash,G.cash));
+  _prevCash=G.cash;
+}
+
+// ═══ HUD ═══
+function updateHud(){
+  document.getElementById('hud').style.display='flex';
+  document.getElementById('result-hud').style.display='flex';
+  document.getElementById('hud-round').textContent=(G.round+1)+' of 4';
+  const answered=G.choices.filter(c=>!c.mock).length;
+  document.getElementById('hud-answered').textContent=answered+' of 4';
+  updateAllCash();
+}
+
+// ═══ FLASH ═══
+function flash(color){
+  const el=document.getElementById('flash-overlay');
+  el.style.background=color==='green'?'rgba(26,122,76,0.25)':'rgba(163,40,45,0.25)';
+  el.style.opacity='1';
+  setTimeout(()=>{el.style.transition='opacity 0.4s';el.style.opacity='0';},100);
+  setTimeout(()=>{el.style.transition='';},550);
+}
+
+
+
+// ═══ CONFETTI ═══
+function confetti(){
+  const cv=document.getElementById('confetti-canvas');
+  cv.style.display='block';
+  cv.width=window.innerWidth;cv.height=window.innerHeight;
+  const ctx=cv.getContext('2d');
+  const pieces=Array.from({length:140},()=>({
+    x:Math.random()*cv.width,y:-10-Math.random()*180,
+    r:4+Math.random()*5,d:2+Math.random()*2.5,
+    color:['#051c2c','#2e6ca4','#1a7a4c','#d0d5da','#4a90d9','#f7f8fa'][Math.floor(Math.random()*6)],
+    ta:0,ts:0.1+Math.random()*0.1,
+  }));
+  let fr=0;
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    pieces.forEach(p=>{
+      p.ta+=p.ts;p.y+=p.d;p.x+=Math.sin(p.ta)*1.4;
+      const tilt=Math.sin(p.ta)*11;
+      ctx.beginPath();ctx.lineWidth=p.r;ctx.strokeStyle=p.color;
+      ctx.moveTo(p.x+tilt+p.r/3,p.y);ctx.lineTo(p.x+tilt,p.y+tilt+p.r);ctx.stroke();
+    });
+    if(++fr<250)requestAnimationFrame(draw);
+    else{ctx.clearRect(0,0,cv.width,cv.height);cv.style.display='none';}
+  }
+  requestAnimationFrame(draw);
+}
+
+
+
+// ═══ SCREENING ═══
+function submitScreening(){
+  G.name=document.getElementById('q-name').value.trim();
+  G.mathYears=parseInt(document.getElementById('q-math').value);
+  G.comfort=parseInt(document.getElementById('q-comfort').value);
+  G.attnAnswer=document.getElementById('q-attn').value;
+  G.attnPass=G.attnAnswer==='teapost';
+  if(!G.name||!G.attnAnswer){document.getElementById('screen-err').style.display='block';return;}
+  document.getElementById('screen-err').style.display='none';
+  G.arm=Math.floor(Math.random()*3);
+  G.tier=Math.floor(Math.random()*2);
+  G.cash=G.tier===1?90:100;
+  _prevCash=G.cash;
+  const pb=document.getElementById('plan-banner');
+  const td=document.getElementById('tier-detail');
+  if(G.tier===1){
+    pb.className='plan-banner plan-paid';pb.textContent='You are on the PAID AI plan';
+    td.innerHTML='<p class="dark" style="margin-bottom:0">You are on a <strong>paid AI plan</strong> (a free version also exists). ₹10 has been deducted from your starting ₹100. Your cash position is now <strong style="color:var(--green)">₹90</strong>.</p>';
+  }else{
+    pb.className='plan-banner plan-free';pb.textContent='You are on the FREE AI plan';
+    td.innerHTML='<p class="dark" style="margin-bottom:0">You are on the <strong>free AI plan</strong>. A paid alternative is available mid-game. Your starting cash position is <strong style="color:var(--green)">₹100</strong>.</p>';
+  }
+  goTo('s-rules');
+}
+
+// ═══ MOCK ═══
+function startMock(){
+  G.startTime=Date.now();
+  renderRound(MOCK,true);
+}
+function startGame(){
+  G.round=0;
+  renderRound(PROBLEMS[0],false);
+}
+
+// ═══ TYPING ═══
+function typeText(el, text, onDone) {
+  el.textContent = '';
+  let i = 0;
+  // 30 wpm = ~5 chars/sec = 200ms per char, but we use word-level pacing
+  // Average word = 5 chars, so 200ms/char gives natural feel
+  const msPerChar = 100;
+  function next() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      setTimeout(next, msPerChar);
+    } else {
+      if (onDone) onDone();
+    }
+  }
+  next();
+}
+
+// ═══ RENDER ROUND ═══
+function renderRound(p,isMock){
+  G.selectedOption=null;G.curProblem=p;G.curIsMock=isMock;
+  document.getElementById('mock-banner').style.display=isMock?'block':'none';
+  document.getElementById('hud').style.display=isMock?'none':'flex';
+  if(!isMock)updateHud();
+
+  const r=isMock?0:G.round;
+  document.getElementById('round-badge').textContent=isMock?'Practice Round':('Round '+(r+1)+' of 4');
+  document.getElementById('prob-title').textContent=p.title;
+  document.getElementById('prob-text').innerHTML=p.text;
+
+  const ok=isMock?true:aiOk(r);
+  const ans=isMock?p.aiCorrect:(ok?p.aiCorrect:p.aiWrong);
+  const useAI2=!isMock&&G.switched&&r===3;
+  const lbl=useAI2?'AI Model 2':(G.tier===1?'AI (Paid Plan)':'AI (Free Plan)');
+  const cls=useAI2?'ai-box ai2':'ai-box';
+  const lcls=useAI2?'ai-label ai2':'ai-label';
+
+  // Thinking dots first
+  document.getElementById('ai-area').innerHTML=`
+    <div class="${cls}">
+      <div class="${lcls}">${lbl} is thinking...</div>
+      <div class="thinking-dots"><span></span><span></span><span></span></div>
+    </div>`;
+
+  // Disable MCQ and verify until AI finishes
+  document.getElementById('verify-btn').disabled=true;
+  document.getElementById('submit-area').style.display='none';
+  const mcq=document.getElementById('round-mcq');
+  mcq.innerHTML='';
+  p.options.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.className='mcq-btn';btn.textContent=opt;btn.disabled=true;
+    btn.onclick=()=>{
+      mcq.querySelectorAll('.mcq-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');G.selectedOption=opt;
+      document.getElementById('submit-area').style.display='block';
+    };
+    mcq.appendChild(btn);
+  });
+
+  G.roundStart=Date.now()+1500;
+  setTimeout(()=>{
+    const fullText = `According to my calculations, the correct answer is ${ans}`;
+    document.getElementById('ai-area').innerHTML=`
+      <div class="${cls} fade-in">
+        <div class="${lcls}">${lbl} suggestion</div>
+        <div class="ai-answer" id="ai-type-el" style="font-size:1rem;font-weight:400;line-height:1.4;min-height:2.5rem"></div>
+        ${disclosure(r,isMock)}
+      </div>`;
+    typeText(document.getElementById('ai-type-el'), fullText, ()=>{
+      document.getElementById('verify-btn').disabled=false;
+      mcq.querySelectorAll('.mcq-btn').forEach(b=>b.disabled=false);
+    });
+  },1500);
+
+  goTo('s-round');
+}
+
+// ═══ DIRECT CHOICE ═══
+function submitDirect(){
+  const p=G.curProblem,isMock=G.curIsMock,r=isMock?0:G.round;
+  const ok=isMock?true:aiOk(r);
+  const aiAns=isMock?p.aiCorrect:(ok?p.aiCorrect:p.aiWrong);
+  const sel=G.selectedOption;
+  const action=sel===aiAns?'accept':'override';
+  const correct=sel===p.correct;
+  const delta=correct?20:0;
+  if(!isMock)G.cash+=delta;
+  record(isMock,r,action,sel,correct,delta,0);
+  showResult(isMock,correct,delta,action,r);
+}
+
+// ═══ VERIFY ═══
+function chooseVerify(){
+  const p=G.curProblem,isMock=G.curIsMock;
+  if(!isMock)G.cash-=5;
+  document.getElementById('calc-title').textContent=p.title;
+  document.getElementById('calc-text').innerHTML=p.text;
+  const cm=document.getElementById('calc-mcq');cm.innerHTML='';
+  p.options.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.className='mcq-btn';btn.textContent=opt;
+    btn.onclick=()=>submitVerify(opt);
+    cm.appendChild(btn);
+  });
+  calcExpr='';document.getElementById('calc-display').textContent='0';
+  goTo('s-calc');
+}
+let calcExpr='';
+function cIn(c){if(calcExpr==='0'||calcExpr==='Error')calcExpr='';calcExpr+=c;document.getElementById('calc-display').textContent=calcExpr||'0';}
+function cClear(){calcExpr='';document.getElementById('calc-display').textContent='0';}
+function cEq(){try{let r=Function('"use strict";return('+calcExpr.replace(/×/g,'*').replace(/÷/g,'/')+')')();calcExpr=parseFloat(r.toFixed(6)).toString();document.getElementById('calc-display').textContent=calcExpr;}catch(e){document.getElementById('calc-display').textContent='Error';calcExpr='';}}
+function cPow(){cIn('**');}
+function cLn(){try{calcExpr=Math.log(parseFloat(calcExpr)).toFixed(6).toString();document.getElementById('calc-display').textContent=calcExpr;}catch(e){}}
+function cLog(){try{calcExpr=Math.log10(parseFloat(calcExpr)).toFixed(6).toString();document.getElementById('calc-display').textContent=calcExpr;}catch(e){}}
+function cSqrt(){try{calcExpr=Math.sqrt(parseFloat(calcExpr)).toFixed(6).toString();document.getElementById('calc-display').textContent=calcExpr;}catch(e){}}
+function submitVerify(sel){
+  const p=G.curProblem,isMock=G.curIsMock,r=isMock?0:G.round;
+  const correct=sel===p.correct,delta=correct?20:0;
+  if(!isMock)G.cash+=delta;
+  record(isMock,r,'verify',sel,correct,delta-5,5);
+  showResult(isMock,correct,delta,'verify',r);
+}
+
+// ═══ RECORD ═══
+function record(isMock,r,action,sel,correct,delta,vcost){
+  G.choices.push({mock:isMock,round:isMock?0:r+1,action,selectedOption:sel,correct,delta,verifyCost:vcost,timeSec:((Date.now()-G.roundStart)/1000).toFixed(1)});
+}
+
+// ═══ SHOW RESULT ═══
+function showResult(isMock,correct,delta,action,r){
+  if(!isMock){
+    flash(correct?'green':'red');
+  }
+  updateAllCash();
+  document.getElementById('result-cash').textContent='₹'+G.cash;
+  const verified=action==='verify';
+  document.getElementById('res-badge').innerHTML=correct?'<div class="badge badge-green">Correct</div>':'<div class="badge badge-red">Incorrect</div>';
+  document.getElementById('res-title').textContent=correct?'Right answer':'Wrong answer';
+  document.getElementById('res-msg').textContent=verified?(correct?'You verified and picked the correct answer.':'You verified but selected the wrong option.'):(action==='accept'?(correct?'You accepted the AI answer and it was correct.':'You accepted the AI answer and it was incorrect.'):(correct?'You chose your own answer and it was correct.':'You chose your own answer and it was incorrect.'));
+  if(isMock){
+    document.getElementById('res-detail').innerHTML='<p class="dark" style="margin-bottom:0">This was practice, your cash position is unaffected. Graded rounds begin next.</p>';
+  }else{
+    const vs=verified?`<div class="result-row"><span>Verification cost</span><span class="result-val neg">&minus;₹5</span></div>`:'';
+    document.getElementById('res-detail').innerHTML=`${vs}<div class="result-row"><span>Points this round</span><span class="result-val ${delta>0?'pos':''}">${delta>0?'+':''}₹${delta}</span></div><div class="result-row"><span>Cash position</span><span class="result-val" style="color:var(--green)">₹${G.cash}</span></div>`;
+  }
+  document.getElementById('prebelief-block').style.display=isMock?'block':'none';
+  document.getElementById('confidence-block').style.display=(!isMock&&r===3)?'block':'none';
+  if(isMock)G.prebelief=0;
+  if(!isMock&&r===3)G.confidence=0;
+  G.curIsMock=isMock;G.curRound=r;
+  goTo('s-result');
+}
+
+// ═══ NEXT ═══
+function nextAfterResult(){
+  const isMock=G.curIsMock,r=G.curRound;
+  if(isMock){
+    if(!G.prebelief){document.getElementById('prebelief-err').style.display='block';return;}
+    document.getElementById('prebelief-err').style.display='none';
+    startGame();return;
+  }
+  if(r===3){
+    if(!G.confidence){document.getElementById('confidence-err').style.display='block';return;}
+    document.getElementById('confidence-err').style.display='none';
+    endGame();return;
+  }
+  if(r===2){
+    document.getElementById('switch-cash').textContent='₹'+G.cash;
+    document.getElementById('stay-label').textContent=G.tier===1?'You stay on your current paid plan':'You stay on your current free plan';
+    goTo('s-switch');return;
+  }
+  G.round++;
+  renderRound(PROBLEMS[G.round],false);
+}
+
+// ═══ SWITCH ═══
+function doSwitch(yes){
+  G.switched=yes;G.switchTime=new Date().toISOString();
+  if(yes)G.cash-=10;
+  G.round++;
+  renderRound(PROBLEMS[G.round],false);
+}
+
+// ═══ END ═══
+function endGame(){
+  G.endTime=Date.now();
+  const graded=G.choices.filter(c=>!c.mock);
+  const allOk=graded.every(c=>c.correct);
+  const prize=G.cash*5;
+  document.getElementById('end-cash').textContent='₹'+G.cash;
+  document.getElementById('end-prize').textContent='₹'+prize;
+  if(allOk){
+    document.getElementById('end-badge').innerHTML='<div class="badge badge-green">Assessment Cleared</div>';
+    document.getElementById('end-title').textContent='Well done';
+    document.getElementById('end-msg').textContent='You answered all 4 questions correctly and are eligible for the prize pool.';
+    document.getElementById('end-eligible').innerHTML='<p class="dark" style="margin-bottom:0">You are <strong>eligible</strong> for the top-3 prize pool. If you finish in the top 3, you will be paid <strong style="color:var(--green)">₹'+prize+'</strong>.</p>';
+    setTimeout(confetti,400);
+  }else{
+    document.getElementById('end-badge').innerHTML='<div class="badge badge-red">Assessment Not Cleared</div>';
+    document.getElementById('end-title').textContent='Assessment incomplete';
+    document.getElementById('end-msg').textContent='You did not answer all 4 questions correctly. You are awarded an I grade and are not eligible for the cash payout.';
+    document.getElementById('end-eligible').innerHTML='<p class="dark" style="margin-bottom:0">You are <strong>not eligible</strong> for the prize pool this time.</p>';
+    setTimeout(()=>document.getElementById('end-card').classList.add('end-dim'),200);
+  }
+  const w=graded.filter(c=>!c.correct).length;
+  document.getElementById('end-summary').innerHTML=`
+    <div class="result-row"><span>Correct answers</span><span class="result-val">${4-w} of 4</span></div>
+    <div class="result-row"><span>Verifications used</span><span class="result-val">${graded.filter(c=>c.action==='verify').length}</span></div>
+    <div class="result-row"><span>Switched AI model</span><span class="result-val">${G.switched?'Yes':'No'}</span></div>`;
+  logToSheets();
+  goTo('s-end');
+}
+
+// ═══ LOGGING ═══
+const SHEETS_URL='YOUR_APPS_SCRIPT_URL_HERE';
+function logToSheets(){
+  const g=G.choices.filter(c=>!c.mock);
+  const mk=G.choices.find(c=>c.mock)||{};
+  const payload={
+    participantId:'P'+Date.now(),name:G.name,
+    timestamp:new Date().toISOString(),
+    totalTimeSec:Math.round((G.endTime-G.startTime)/1000),
+    arm:['control','categorical','quantified'][G.arm],
+    tier:G.tier===1?'paid':'free',
+    mathYears:G.mathYears,quantComfort:G.comfort,
+    attnAnswer:G.attnAnswer,attnPass:G.attnPass,
+    prebelief:G.prebelief,confidence:G.confidence,
+    switched:G.switched,finalCash:G.cash,
+    eligible:G.choices.filter(c=>!c.mock).every(c=>c.correct),
+    prize:G.cash*5,
+    mock_action:mk.action||'',mock_correct:mk.correct||false,
+    r1_action:g[0]?.action||'',r1_answer:g[0]?.selectedOption||'',r1_correct:g[0]?.correct||false,r1_delta:g[0]?.delta||0,r1_time:g[0]?.timeSec||0,
+    r2_action:g[1]?.action||'',r2_answer:g[1]?.selectedOption||'',r2_correct:g[1]?.correct||false,r2_delta:g[1]?.delta||0,r2_time:g[1]?.timeSec||0,
+    r3_action:g[2]?.action||'',r3_answer:g[2]?.selectedOption||'',r3_correct:g[2]?.correct||false,r3_delta:g[2]?.delta||0,r3_time:g[2]?.timeSec||0,
+    r4_action:g[3]?.action||'',r4_answer:g[3]?.selectedOption||'',r4_correct:g[3]?.correct||false,r4_delta:g[3]?.delta||0,r4_time:g[3]?.timeSec||0,
+  };
+  if(SHEETS_URL==='YOUR_APPS_SCRIPT_URL_HERE'){console.log('Payload:',payload);return;}
+  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(e=>console.warn(e));
+}
+</script>
+</body>
+</html>
